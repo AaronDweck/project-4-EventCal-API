@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import NotAuthenticated, ValidationError
 from .serializers.common import UserSerializer
 from datetime import datetime, timedelta
 import jwt
@@ -31,7 +32,6 @@ def generate_token(user):
 class RegisterView(APIView):
 
     def post(self, request):
-        print('data: ', request.data['email'])
         serialized_user = UserSerializer(data=request.data)
         if not serialized_user.is_valid():
             return Response(serialized_user.errors, 422)
@@ -41,4 +41,21 @@ class RegisterView(APIView):
 
         token = generate_token(user)
 
-        return Response({'message': 'register successful', 'token': token}, 201)
+        return Response({'message': 'Registration was successful', 'token': token}, 201)
+    
+class LoginView(APIView):
+
+    def post(self, request):
+        try:
+            user = User.objects.get(email=request.data['email'])
+
+            if not user.check_password(request.data['password']):
+                raise ValidationError('Incorrect password')
+            
+            token = generate_token(user)
+            
+            return Response({'message': 'Login was successful', 'token': token})
+
+        except (User.DoesNotExist, ValidationError) as error:
+            print(error)
+            raise NotAuthenticated('Invalid credentials')
