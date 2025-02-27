@@ -38,8 +38,6 @@ class EventsDetailView(APIView):
             print(error)
             raise NotFound('Event not found')
         
-        print (event.user)
-        print (self.request.user)
         if event.user != self.request.user:
             raise PermissionDenied('You are unauthorized to make these changes')
             
@@ -57,3 +55,10 @@ class EventsDetailView(APIView):
         serialized_event.save()
 
         return Response(serialized_event.data)
+    
+    def delete(self, request, event_id):
+
+        event = self.get_object(event_id)
+
+        event.delete()
+        return Response(status=204)
