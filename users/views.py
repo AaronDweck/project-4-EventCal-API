@@ -58,4 +58,4 @@ class LoginView(APIView):
 
         except (User.DoesNotExist, ValidationError) as error:
             print(error)
-            raise NotAuthenticated('Invalid credentials')
+            raise NotAuthenticated({'detail' : ['Invalid credentials']})
