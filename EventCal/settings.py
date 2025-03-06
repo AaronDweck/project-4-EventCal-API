@@ -46,7 +46,7 @@ else:
     ALLOWED_HOSTS = ['eventcal-api-825b4186710c.herokuapp.com'] # don't include the protocol (https://)
 
     CORS_ALLOWED_ORIGINS = [
-        "https://p4-EventCal.netlify.app", # Deployed frontend url only
+        "https://p4-eventcal.netlify.app", # Deployed frontend url only
     ]
 
     CSRF_TRUSTED_ORIGINS = [
